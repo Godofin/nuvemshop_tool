@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferramentas Nuvemshop - Excursões & Imagens</title>
+    <title>Ferramentas Nuvemshop - Suite Completa</title>
+    
+    <!-- CSS Frameworks & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Scripts para a Aba Vue & Lucide -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         /* Estilo personalizado para o scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         /* Utilitários de transição e tabs */
         .tool-section { display: none; animation: fadeIn 0.3s ease-in-out; }
@@ -29,6 +36,11 @@
             color: #1e40af;
             background-color: #eff6ff;
         }
+
+        /* Ajustes específicos para o Vue dentro da aba */
+        #vue-app input, #vue-app textarea, #vue-app select {
+            font-family: inherit;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -36,135 +48,153 @@
     <!-- MENU DE NAVEGAÇÃO (ABAS) -->
     <div class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="flex space-x-1">
-                <button onclick="switchTool('generator')" id="nav-generator" class="nav-tab active flex items-center py-4 px-6 font-semibold text-gray-600 hover:text-blue-600 transition-colors w-full md:w-auto justify-center border-b-3 border-transparent">
-                    <i class="fa-solid fa-bus mr-2"></i> Gerador de Excursão
+            <div class="flex space-x-1 overflow-x-auto">
+                <button onclick="switchTool('portable')" id="nav-portable" class="nav-tab active flex items-center py-4 px-6 font-semibold text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap border-b-3 border-transparent">
+                    <i class="fa-solid fa-bus mr-2"></i> Gerador de Excursão (Novo)
                 </button>
-                <button onclick="switchTool('resizer')" id="nav-resizer" class="nav-tab flex items-center py-4 px-6 font-semibold text-gray-600 hover:text-blue-600 transition-colors w-full md:w-auto justify-center border-b-3 border-transparent">
-                    <i class="fa-solid fa-image mr-2"></i> Redimensionador Nuvemshop
+                <button onclick="switchTool('resizer')" id="nav-resizer" class="nav-tab flex items-center py-4 px-6 font-semibold text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap border-b-3 border-transparent">
+                    <i class="fa-solid fa-image mr-2"></i> Redimensionador
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto p-6">
+    <div class="max-w-7xl mx-auto p-4 md:p-6">
         
         <!-- ========================================== -->
-        <!-- FERRAMENTA 1: GERADOR DE EXCURSÃO          -->
+        <!-- FERRAMENTA 1: GERADOR PORTÁTIL (VUE)       -->
         <!-- ========================================== -->
-        <div id="tool-generator" class="tool-section active">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div id="tool-portable" class="tool-section active">
+            <!-- Container Vue isolado (ID alterado para vue-app para evitar conflitos) -->
+            <div id="vue-app" class="h-[850px] flex flex-col md:flex-row bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-300">
                 
-                <!-- COLUNA DA ESQUERDA: FORMULÁRIO -->
-                <div class="bg-white p-6 rounded-lg shadow-lg h-fit">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Dados do Evento</h2>
-                    <form id="generatorForm" class="space-y-4">
-                        <!-- Linha 1 -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Nome do Artista/Banda</label>
-                                <input type="text" id="artist" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Iron Maiden" oninput="updateAll()">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Nome da Turnê (Opcional)</label>
-                                <input type="text" id="tourName" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Ex: The Future Past Tour" oninput="updateAll()">
-                            </div>
-                        </div>
-                        <!-- Linha 2 -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Data do Show</label>
-                                <input type="text" id="date" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Ex: 15 de Março de 2026" oninput="updateAll()">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Local (Venue)</label>
-                                <input type="text" id="venue" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Ex: Allianz Parque, SP" oninput="updateAll()">
-                            </div>
-                        </div>
-                        <!-- Cidades -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Cidades de Embarque (Uma por linha)</label>
-                            <textarea id="cities" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Araraquara&#10;São Carlos&#10;Limeira" oninput="updateAll()"></textarea>
-                        </div>
-                        <!-- Status -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Status Especial</label>
-                            <select id="status" class="mt-1 block w-full border border-gray-300 rounded-md p-2" onchange="updateAll()">
-                                <option value="normal">Normal</option>
-                                <option value="soldout">Ingressos Esgotados (Sold Out)</option>
-                                <option value="newdate">Nova Data Extra</option>
-                                <option value="lastseats">Últimas Vagas</option>
-                            </select>
-                        </div>
-                        <!-- Descrição -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Texto Descritivo (Copy)</label>
-                            <textarea id="description" rows="5" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Cole o texto sobre a banda aqui..." oninput="updateAll()"></textarea>
-                        </div>
-                        <!-- Extras -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Inclusões (Separadas por vírgula)</label>
-                            <input type="text" id="inclusions" class="mt-1 block w-full border border-gray-300 rounded-md p-2" value="Transporte executivo ida e volta, Seguro viagem, Monitores da agência, Serviço de bordo na ida" oninput="updateAll()">
-                        </div>
-                    </form>
-                </div>
+                <!-- SIDEBAR / EDITOR -->
+                <div class="w-full md:w-5/12 bg-white h-full overflow-y-auto border-r border-slate-200 flex flex-col">
+                    <div class="p-6 pb-20 md:pb-6">
+                        <h1 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                            <i data-lucide="bus" class="w-6 h-6 text-red-600"></i>
+                            Editor Visual
+                        </h1>
 
-                <!-- COLUNA DA DIREITA: PREVIEW E CÓDIGO -->
-                <div class="flex flex-col gap-6">
-                    <!-- PREVIEW VISUAL -->
-                    <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase mb-2">Visualização (Como fica na loja)</h3>
-                        <div id="previewArea" class="border p-4 rounded bg-white min-h-[300px]">
-                            <!-- O conteúdo será injetado aqui -->
+                        <!-- SELETOR DE TEMA -->
+                        <div class="mb-8">
+                            <label class="block text-sm font-bold text-slate-600 mb-2 uppercase tracking-wide">Estilo do Evento</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button 
+                                    v-for="(t, key) in themes" 
+                                    :key="key"
+                                    @click="theme = key"
+                                    class="p-2 rounded-lg text-sm font-medium transition-all"
+                                    :class="theme === key ? 'bg-slate-800 text-white shadow-lg scale-105' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                                >
+                                    {{ t.name }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- DADOS GERAIS -->
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase flex items-center gap-2">
+                                    <i data-lucide="info" class="w-4 h-4"></i> Dados Gerais
+                                </h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">Nome da Excursão</label>
+                                        <input v-model="formData.eventName" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-500 mb-1">Data <span class="text-slate-400 font-normal text-[10px]">(Vazio oculta)</span></label>
+                                            <input v-model="formData.date" placeholder="Ex: 21/09/2024" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-500 mb-1">Local</label>
+                                            <input v-model="formData.location" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">Intro (Texto destaque)</label>
+                                        <textarea v-model="formData.introText" rows="2" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-xs"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PONTOS DE EMBARQUE -->
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-sm font-bold text-slate-500 uppercase flex items-center gap-2">
+                                        <i data-lucide="map-pin" class="w-4 h-4"></i> Embarques
+                                    </h3>
+                                    <button @click="addStop" class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 flex items-center gap-1 transition-colors">
+                                        <i data-lucide="plus" class="w-3 h-3"></i> Add
+                                    </button>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div v-for="(stop, index) in formData.stops" :key="index" class="bg-white p-3 rounded shadow-sm border border-slate-200 relative group">
+                                        <button @click="removeStop(index)" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 transition-colors" title="Remover">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                        <div class="grid grid-cols-3 gap-2 mb-2 pr-6">
+                                            <input placeholder="Horário" v-model="stop.time" class="p-1 border border-slate-200 rounded text-sm">
+                                            <input placeholder="Cidade" v-model="stop.city" class="col-span-2 p-1 border border-slate-200 rounded text-sm font-bold">
+                                        </div>
+                                        <input placeholder="Local específico" v-model="stop.location" class="w-full p-1 border border-slate-200 rounded text-sm mb-2">
+                                        <input placeholder="Obs de retorno" v-model="stop.returnLoc" class="w-full p-1 border border-slate-200 rounded text-xs text-slate-500 bg-slate-50">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DESCRIÇÃO DO SHOW -->
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase flex items-center gap-2">
+                                    <i data-lucide="music" class="w-4 h-4"></i> Sobre o Show
+                                </h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">Título do Bloco</label>
+                                        <input v-model="formData.showTitle" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">Descrição Detalhada</label>
+                                        <textarea v-model="formData.showDescription" rows="4" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- CÓDIGOS GERADOS -->
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-white">
-                        <div class="flex border-b border-gray-600 mb-4">
-                            <button onclick="switchCodeTab('html')" id="btn-html" class="tab-btn py-2 px-4 text-blue-400 border-b-2 border-blue-400 font-bold">HTML (Descrição)</button>
-                            <button onclick="switchCodeTab('seo')" id="btn-seo" class="tab-btn py-2 px-4 text-gray-400 hover:text-white">SEO & Tags</button>
+                <!-- MAIN CONTENT / PREVIEW -->
+                <div class="w-full md:w-7/12 bg-slate-200 h-full flex flex-col">
+                    <!-- TOOLBAR -->
+                    <div class="bg-white p-3 shadow-sm flex justify-between items-center px-4 md:px-6 z-10">
+                        <div class="flex gap-2 bg-slate-100 p-1 rounded-lg">
+                            <button @click="activeTab = 'preview'" 
+                                class="px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+                                :class="activeTab === 'preview' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-800'">
+                                <i data-lucide="eye" class="w-4 h-4"></i> <span class="hidden sm:inline">Visualizar</span>
+                            </button>
+                            <button @click="activeTab = 'code'" 
+                                class="px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+                                :class="activeTab === 'code' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-800'">
+                                <i data-lucide="code" class="w-4 h-4"></i> <span class="hidden sm:inline">Código HTML</span>
+                            </button>
                         </div>
+                        
+                        <button @click="copyToClipboard" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-md hover:shadow-lg">
+                            <i data-lucide="copy" class="w-4 h-4"></i> <span id="copyText">Copiar</span>
+                        </button>
+                    </div>
 
-                        <!-- Conteúdo HTML -->
-                        <div id="tab-html" class="tab-content">
-                            <label class="text-xs text-gray-400 uppercase">Copie e cole no código-fonte &lt; &gt;</label>
-                            <div class="relative mt-1">
-                                <textarea id="codeOutput" readonly class="w-full h-48 bg-gray-900 text-green-400 font-mono text-xs p-3 rounded border border-gray-700 focus:outline-none"></textarea>
-                                <button onclick="copyToClipboard('codeOutput')" class="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded transition">Copiar</button>
-                            </div>
+                    <!-- AREA DE CONTEÚDO -->
+                    <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-200">
+                        <div v-if="activeTab === 'preview'" class="max-w-[800px] mx-auto bg-white shadow-2xl rounded-xl overflow-hidden min-h-[500px]">
+                            <div v-html="generatedCode"></div>
                         </div>
-
-                        <!-- Conteúdo SEO -->
-                        <div id="tab-seo" class="tab-content hidden space-y-4">
-                            <div>
-                                <label class="text-xs text-gray-400 uppercase font-bold">Título SEO</label>
-                                <div class="relative">
-                                    <input type="text" id="seoTitle" readonly class="w-full bg-gray-900 text-white text-sm p-2 rounded border border-gray-700">
-                                    <button onclick="copyToClipboard('seoTitle')" class="absolute top-1 right-1 bg-gray-700 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded">Copiar</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 uppercase font-bold">Meta Description</label>
-                                <div class="relative">
-                                    <textarea id="seoDesc" readonly rows="2" class="w-full bg-gray-900 text-white text-sm p-2 rounded border border-gray-700"></textarea>
-                                    <button onclick="copyToClipboard('seoDesc')" class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded">Copiar</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 uppercase font-bold">Tags/Palavras-chave</label>
-                                <div class="relative">
-                                    <textarea id="seoTags" readonly rows="3" class="w-full bg-gray-900 text-white text-sm p-2 rounded border border-gray-700"></textarea>
-                                    <button onclick="copyToClipboard('seoTags')" class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded">Copiar</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 uppercase font-bold">URL do Produto (Slug)</label>
-                                <div class="relative">
-                                    <input type="text" id="seoSlug" readonly class="w-full bg-gray-900 text-white text-sm p-2 rounded border border-gray-700">
-                                    <button onclick="copyToClipboard('seoSlug')" class="absolute top-1 right-1 bg-gray-700 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded">Copiar</button>
-                                </div>
-                            </div>
+                        <div v-else class="max-w-[800px] mx-auto h-full">
+                            <textarea readonly class="w-full h-[600px] p-6 font-mono text-sm bg-slate-900 text-green-400 rounded-xl shadow-inner resize-none focus:outline-none" :value="generatedCode"></textarea>
                         </div>
                     </div>
                 </div>
@@ -188,7 +218,7 @@
                             <input type="file" id="imageInput" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                         </div>
 
-                        <!-- Seletor de Presets (NOVIDADE) -->
+                        <!-- Seletor de Presets -->
                         <div>
                             <label for="presetSelect" class="block text-sm font-medium text-gray-700 mb-2">2. Escolher Formato (Nuvemshop)</label>
                             <select id="presetSelect" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
@@ -257,7 +287,7 @@
     <!-- SCRIPTS COMBINADOS -->
     <script>
         // ==========================================
-        // NAVEGAÇÃO (ABAS)
+        // NAVEGAÇÃO GERAL (ABAS)
         // ==========================================
         function switchTool(toolId) {
             // Remove active class from all sections and buttons
@@ -270,111 +300,7 @@
         }
 
         // ==========================================
-        // LÓGICA: GERADOR DE EXCURSÃO
-        // ==========================================
-        function updateAll() {
-            const artist = document.getElementById('artist').value || 'Nome da Banda';
-            const tourName = document.getElementById('tourName').value;
-            const date = document.getElementById('date').value || 'Data a definir';
-            const venue = document.getElementById('venue').value || 'Local a definir';
-            const citiesText = document.getElementById('cities').value;
-            const status = document.getElementById('status').value;
-            const description = document.getElementById('description').value || 'Descrição do evento...';
-            const inclusionsText = document.getElementById('inclusions').value;
-
-            // Process Cities
-            const citiesArray = citiesText.split('\n').filter(city => city.trim() !== '');
-            let citiesHtml = '';
-            let citiesStringSEO = '';
-            
-            citiesArray.forEach(city => {
-                citiesHtml += `<li style="padding: 8px 0; border-bottom: 1px solid #eee; font-size: 1.05em;">📍 <strong>${city}</strong></li>`;
-                citiesStringSEO += `${city}, `;
-            });
-            citiesStringSEO = citiesStringSEO.slice(0, -2); 
-
-            // Process Inclusions
-            const inclusionsArray = inclusionsText.split(',').filter(item => item.trim() !== '');
-            let inclusionsHtml = '';
-            inclusionsArray.forEach(item => {
-                inclusionsHtml += `<li>${item.trim()}.</li>`;
-            });
-
-            // Alert Box Logic
-            let alertBox = '';
-            if (status === 'soldout') {
-                alertBox = `<div style="background-color: #222; color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid #e30613;"><h3 style="margin-top: 0; color: #fff; font-size: 1.1em;">⚠️ Atenção: Ingressos Esgotados</h3><p style="margin-bottom: 0; font-size: 0.95em;">O show está sold-out! Garanta agora seu transporte antes que as vagas no ônibus também acabem.</p></div>`;
-            } else if (status === 'newdate') {
-                alertBox = `<div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid #28a745;"><h3 style="margin-top: 0; color: #000;">📅 Nova Data Extra!</h3><p style="margin-bottom: 0;">Devido à alta demanda, abrimos excursão para a data extra.</p></div>`;
-            } else if (status === 'lastseats') {
-                alertBox = `<div style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba;"><h3 style="margin-top: 0; font-size: 1.1em;">⏳ Últimas Vagas</h3><p style="margin-bottom: 0;">Restam pouquíssimos lugares para esta excursão.</p></div>`;
-            }
-
-            const fullTitle = tourName ? `Excursão ${artist}: ${tourName}` : `Excursão ${artist}`;
-
-            // HTML Template
-            const htmlTemplate = `
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6;">
-    <h2 style="color: #000; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px;">${fullTitle}</h2>
-    <p style="font-style: italic; color: #666;">[Imagem do Pôster do Show aqui]</p>
-    ${alertBox}
-    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
-        <p style="margin: 0 0 8px 0;"><strong>📅 DATA:</strong> ${date}</p>
-        <p style="margin: 0;"><strong>🏟️ LOCAL:</strong> ${venue}</p>
-    </div>
-    <div style="border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
-        <h3 style="margin-top: 0; color: #004085; font-size: 1.2em;">🚌 Cidades de Embarque</h3>
-        <ul style="list-style: none; padding: 0; margin: 0;">${citiesHtml || '<li style="color:#999;">Nenhuma cidade inserida</li>'}</ul>
-        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">*Selecione sua cidade nas opções do produto.</p>
-    </div>
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-    <h3 style="color: #000;">Sobre o Evento</h3>
-    <div style="margin-bottom: 20px;">${description.replace(/\n/g, '<br>')}</div>
-    <h4 style="color: #333;">O pacote inclui:</h4>
-    <ul style="margin-bottom: 25px;">${inclusionsHtml}</ul>
-    <div style="background-color: #000; color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
-        <p style="margin: 0; font-weight: bold; text-transform: uppercase;">Garanta seu lugar</p>
-        <p style="margin: 5px 0 0 0; font-size: 0.8em;">Vagas limitadas. Compra 100% segura.</p>
-    </div>
-</div>`;
-
-            document.getElementById('previewArea').innerHTML = htmlTemplate;
-            document.getElementById('codeOutput').value = htmlTemplate.trim();
-
-            // SEO
-            const seoT = `Excursão ${artist} ${new Date().getFullYear() + 1} - Saída ${citiesStringSEO}`;
-            document.getElementById('seoTitle').value = seoT.substring(0, 70);
-            const seoD = `Garanta seu transporte para o show do ${artist} no ${venue}. Excursão com saída de ${citiesStringSEO}. Conforto e segurança. Reserve agora!`;
-            document.getElementById('seoDesc').value = seoD.substring(0, 160);
-            const tags = `Excursão, Transporte, ${artist}, ${tourName}, ${venue}, Show, Rock, Viagem, ${citiesStringSEO.replace(/, /g, ', ')}`;
-            document.getElementById('seoTags').value = tags;
-            const slugBase = `excursao-${artist}-sp-${citiesStringSEO}`;
-            const slug = slugBase.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-');
-            document.getElementById('seoSlug').value = slug;
-        }
-
-        function switchCodeTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('text-blue-400', 'border-blue-400', 'font-bold');
-                el.classList.add('text-gray-400');
-            });
-            document.getElementById(`btn-${tab}`).classList.add('text-blue-400', 'border-blue-400', 'font-bold');
-            document.getElementById(`btn-${tab}`).classList.remove('text-gray-400');
-        }
-
-        function copyToClipboard(elementId) {
-            const el = document.getElementById(elementId);
-            el.select();
-            document.execCommand('copy');
-            const originalBg = el.style.backgroundColor;
-            el.style.backgroundColor = '#d1fae5';
-            setTimeout(() => el.style.backgroundColor = originalBg, 200);
-        }
-
-        // ==========================================
-        // LÓGICA: REDIMENSIONADOR DE IMAGENS
+        // FERRAMENTA 2: REDIMENSIONADOR
         // ==========================================
         const imageInput = document.getElementById('imageInput');
         const widthInput = document.getElementById('widthInput');
@@ -390,7 +316,6 @@
         const errorMessageText = document.getElementById('error-message-text');
         let originalImageSrc = null;
 
-        // Controle de Presets
         presetSelect.addEventListener('change', function() {
             const val = this.value;
             if (val === 'custom') {
@@ -404,7 +329,6 @@
             }
         });
 
-        // Carregar Imagem
         imageInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -420,7 +344,6 @@
             }
         });
 
-        // Redimensionar
         resizeButton.addEventListener('click', () => {
             const width = parseInt(widthInput.value, 10);
             const height = parseInt(heightInput.value, 10);
@@ -447,7 +370,6 @@
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 
-                // Melhor qualidade
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 
@@ -469,8 +391,175 @@
             };
         });
 
-        // Inicializa o gerador
-        updateAll();
+        // ==========================================
+        // FERRAMENTA 3: GERADOR PORTÁTIL (VUE.JS)
+        // ==========================================
+        const { createApp, ref, computed, onUpdated, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const activeTab = ref('editor');
+                const theme = ref('rock');
+
+                // DADOS INICIAIS
+                const formData = ref({
+                    eventName: 'AC/DC - Power Up Tour',
+                    date: '21/09/2024',
+                    location: 'Estádio do Morumbi - SP',
+                    introText: 'Prepare-se para uma experiência inesquecível! Nossa excursão garante que sua única preocupação seja aproveitar cada minuto do espetáculo.',
+                    returnText: '40 minutos após o término do show.',
+                    stops: [
+                        { time: '09:00', city: 'ARARAQUARA', location: 'Rodoviária (parte de cima)', returnLoc: 'Retorno no mesmo local' },
+                        { time: '09:25', city: 'IBATÉ', location: 'Rotatória do rodeio', returnLoc: 'Retorno no mesmo local' },
+                        { time: '09:45', city: 'SÃO CARLOS', location: 'Hospital Universitário (portaria principal)', returnLoc: 'Retorno no mesmo local' },
+                        { time: '10:40', city: 'RIO CLARO', location: 'Viviane Veículos', returnLoc: 'Retorno na Rodoviária' },
+                        { time: '11:15', city: 'LIMEIRA', location: 'Graal Topázio', returnLoc: 'Retorno no Graal Castelo' },
+                        { time: '12:30', city: 'REGIÃO DE CAMPINAS', location: 'Shopping SerrAzul (Shell)', returnLoc: 'Retorno no Posto SerrAzul' },
+                    ],
+                    showTitle: 'A Lenda do Rock Retorna',
+                    showDescription: 'A lendária banda continua sua trajetória de sucesso. Nomeada em homenagem ao mais recente álbum de estúdio da banda — que alcançou o 1º lugar em 21 países — esta turnê levará a banda a alguns dos maiores estádios do continente.',
+                    importantNotes: [
+                        'Desistência: Não haverá reembolso dos valores pagos.',
+                        'Troca de Titularidade: Até 7 dias antes da viagem.',
+                        'Tolerância: 10 minutos na saída. No retorno, partida no horário exato.'
+                    ]
+                });
+
+                // CONFIGURAÇÃO DE TEMAS
+                const themes = {
+                    rock: {
+                        name: 'Rock / Metal',
+                        colors: { bg: '#ffffff', containerBorder: '#333333', title: '#2c3e50', accent: '#e74c3c', sectionTitle: '#000000', hr: '#000000', lightBg: '#f2f2f2' },
+                        icons: { bullet: ['🎸', '💀', '🤘', '⚡', '🥁', '🔥'], title: '🎤', bus: '🚌', warning: '🔥', check: '🤘' },
+                        font: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                    },
+                    pop: {
+                        name: 'Pop / Diva',
+                        colors: { bg: '#ffffff', containerBorder: '#ff69b4', title: '#d63384', accent: '#ff007f', sectionTitle: '#9b59b6', hr: '#ffb6c1', lightBg: '#fff0f5' },
+                        icons: { bullet: ['✨', '🌟', '💖', '🎤', '🌈', '💃'], title: '✨', bus: '🚌', warning: '🚨', check: '✅' },
+                        font: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+                    },
+                    kpop: {
+                        name: 'K-Pop',
+                        colors: { bg: '#ffffff', containerBorder: '#dda0dd', title: '#8e44ad', accent: '#9b59b6', sectionTitle: '#be93d4', hr: '#e6e6fa', lightBg: '#f8f4ff' },
+                        icons: { bullet: ['🫰', '💜', '🐰', '🎀', '🍭', '☁️'], title: '🫶', bus: '🚌', warning: '⚠️', check: '🍬' },
+                        font: "'Comic Sans MS', 'Chalkboard SE', sans-serif"
+                    },
+                    festival: {
+                        name: 'Festival / Good Vibes',
+                        colors: { bg: '#ffffff', containerBorder: '#27ae60', title: '#d35400', accent: '#e67e22', sectionTitle: '#16a085', hr: '#f1c40f', lightBg: '#f9fff9' },
+                        icons: { bullet: ['🌻', '⛺', '🎡', '☮️', '☀️', '🍄'], title: '🎪', bus: '🚌', warning: '🌵', check: '🌿' },
+                        font: "'Courier New', Courier, monospace"
+                    }
+                };
+
+                // FUNÇÕES
+                const addStop = () => {
+                    formData.value.stops.push({ time: '', city: '', location: '', returnLoc: '' });
+                };
+
+                const removeStop = (index) => {
+                    formData.value.stops = formData.value.stops.filter((_, i) => i !== index);
+                };
+
+                // GERADOR DE CÓDIGO
+                const generatedCode = computed(() => {
+                    const t = themes[theme.value];
+                    const getIcon = (idx) => t.icons.bullet[idx % t.icons.bullet.length];
+
+                    let stopsHtml = formData.value.stops.map((stop, index) => `
+        <li style="margin-bottom: 15px; border-bottom: 1px dotted #ccc; padding-bottom: 5px;">
+           <span style="font-size: 1.2em;">${getIcon(index)}</span> 
+           <strong>${stop.city.toUpperCase()} – ${stop.time}</strong> | ${stop.location}
+           ${stop.returnLoc ? `<br><small style="color: #666; margin-left: 25px;">↪ ${stop.returnLoc}</small>` : ''}
+        </li>`).join('');
+
+                    let notesHtml = formData.value.importantNotes.map(note => `<p style="margin: 5px 0;">❌ ${note}</p>`).join('');
+
+                    return `
+<div style="font-family: ${t.font}; line-height: 1.6; color: #333; max-width: 800px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px; background-color: ${t.colors.bg};">
+
+    <!-- CABEÇALHO -->
+    <h2 style="color: ${t.colors.title}; border-bottom: 3px solid ${t.colors.accent}; padding-bottom: 10px;">
+       ${t.icons.title} Informações do Show
+    </h2>
+    <p><strong>Evento:</strong> ${formData.value.eventName}</p>
+    ${formData.value.date ? `<p><strong>Data da Viagem:</strong> ${formData.value.date}</p>` : ''}
+    <p><strong>Local do Evento:</strong> ${formData.value.location}</p>
+    
+    <p style="background-color: ${t.colors.lightBg}; padding: 15px; border-left: 5px solid ${t.colors.accent}; border-radius: 4px; font-style: italic;">
+        ${formData.value.introText}
+    </p>
+
+    <hr style="margin: 30px 0; border: 0; border-top: 1px dashed ${t.colors.hr};">
+
+    <!-- EMBARQUES -->
+    <h3 style="color: ${t.colors.sectionTitle}; text-transform: uppercase;">${t.icons.bus} Pontos de Embarque / Horários</h3>
+    <ul style="list-style: none; padding: 0;">
+        ${stopsHtml}
+    </ul>
+    <p><strong>🕒 Retorno:</strong> ${formData.value.returnText}</p>
+
+    <!-- INCLUSO -->
+    <h3 style="color: ${t.colors.sectionTitle}; text-transform: uppercase;">${t.icons.check} Incluso no pacote</h3>
+    <ul style="list-style: none; padding-left: 0;">
+        <li>✅ Transporte ida e volta (Licenciado).</li>
+        <li>✅ Guia de turismo acompanhando.</li>
+        <li>✅ Seguro viagem.</li>
+        <li>✅ Empresa credenciada Cadastur.</li>
+    </ul>
+
+    <!-- IMPORTANTE -->
+    <div style="background-color: #fff3f3; border: 1px solid #ffcccc; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="color: #c0392b; margin-top: 0; text-transform: uppercase;">${t.icons.warning} Importante</h3>
+        <div style="font-size: 0.9em; color: #555;">
+            ${notesHtml}
+            <p style="margin-top: 10px;">📄 <strong>Guarde seu comprovante, ele vale como recibo oficial.</strong></p>
+        </div>
+    </div>
+
+    <!-- DESCRIÇÃO DO SHOW (DIVISÃO INFERIOR) -->
+    <div style="margin-top: 40px; border-top: 4px solid ${t.colors.accent}; padding-top: 20px;">
+        <h2 style="color: ${t.colors.accent}; text-transform: uppercase; margin-bottom: 10px;">${formData.value.showTitle}</h2>
+        <div style="color: #444;">
+            <p>${formData.value.showDescription.replace(/\n/g, '<br>')}</p>
+        </div>
+    </div>
+
+    <p style="text-align: center; margin-top: 30px; font-weight: bold; color: ${t.colors.accent}; font-size: 0.9em;">
+        ${t.icons.bullet[0]} Em caso de adiamento do show, a excursão acontece na nova data. Show adiado não gera reembolso. ${t.icons.bullet[0]}
+    </p>
+</div>`;
+                });
+
+                const copyToClipboard = () => {
+                    navigator.clipboard.writeText(generatedCode.value);
+                    const btnText = document.getElementById('copyText');
+                    const originalText = btnText.innerText;
+                    btnText.innerText = 'Copiado!';
+                    setTimeout(() => btnText.innerText = originalText, 1500);
+                };
+
+                onUpdated(() => {
+                    lucide.createIcons();
+                });
+                
+                onMounted(() => {
+                    lucide.createIcons();
+                });
+
+                return {
+                    activeTab,
+                    theme,
+                    themes,
+                    formData,
+                    addStop,
+                    removeStop,
+                    generatedCode,
+                    copyToClipboard
+                };
+            }
+        }).mount('#vue-app');
     </script>
 </body>
 </html>
