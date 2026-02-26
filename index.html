@@ -79,6 +79,7 @@
                         <!-- SELETOR DE TEMA -->
                         <div class="mb-8">
                             <label class="block text-sm font-bold text-slate-600 mb-2 uppercase tracking-wide">Estilo do Evento</label>
+                            <!-- Grid ajustado para 2 colunas, permitindo visualização de mais temas confortavelmente -->
                             <div class="grid grid-cols-2 gap-2">
                                 <button 
                                     v-for="(t, key) in themes" 
@@ -439,14 +440,26 @@
                         icons: { bullet: ['✨', '🌟', '💖', '🎤', '🌈', '💃'], title: '✨', bus: '🚌', warning: '🚨', check: '✅' },
                         font: "'Helvetica Neue', Helvetica, Arial, sans-serif"
                     },
+                    pop_masculino: {
+                        name: 'Pop Masculino',
+                        colors: { bg: '#ffffff', containerBorder: '#1e3a8a', title: '#1e40af', accent: '#0ea5e9', sectionTitle: '#0369a1', hr: '#bae6fd', lightBg: '#f0f9ff' },
+                        icons: { bullet: ['🕺', '🎤', '🕶️', '🔥', '💫', '🎶'], title: '🎙️', bus: '🚐', warning: '⚠️', check: '✔️' },
+                        font: "'Inter', 'Helvetica Neue', Helvetica, sans-serif"
+                    },
                     kpop: {
                         name: 'K-Pop',
                         colors: { bg: '#ffffff', containerBorder: '#dda0dd', title: '#8e44ad', accent: '#9b59b6', sectionTitle: '#be93d4', hr: '#e6e6fa', lightBg: '#f8f4ff' },
                         icons: { bullet: ['🫰', '💜', '🐰', '🎀', '🍭', '☁️'], title: '🫶', bus: '🚌', warning: '⚠️', check: '🍬' },
                         font: "'Comic Sans MS', 'Chalkboard SE', sans-serif"
                     },
+                    sertanejo: {
+                        name: 'Sertanejo / Agro',
+                        colors: { bg: '#ffffff', containerBorder: '#8b4513', title: '#5c4033', accent: '#d2691e', sectionTitle: '#a0522d', hr: '#deb887', lightBg: '#fff8dc' },
+                        icons: { bullet: ['🤠', '🐴', '👢', '🎸', '🍻', '🌾'], title: '🪗', bus: '🚌', warning: '🚧', check: '👍' },
+                        font: "'Trebuchet MS', 'Lucida Sans Unicode', sans-serif"
+                    },
                     festival: {
-                        name: 'Festival / Good Vibes',
+                        name: 'Festival / Vibes',
                         colors: { bg: '#ffffff', containerBorder: '#27ae60', title: '#d35400', accent: '#e67e22', sectionTitle: '#16a085', hr: '#f1c40f', lightBg: '#f9fff9' },
                         icons: { bullet: ['🌻', '⛺', '🎡', '☮️', '☀️', '🍄'], title: '🎪', bus: '🚌', warning: '🌵', check: '🌿' },
                         font: "'Courier New', Courier, monospace"
